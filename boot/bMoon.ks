@@ -29,6 +29,10 @@ function saveFlightState {
 	print "Saved flight state: " + state.
 }
 
+print("***").
+print("< Engage brakes to disable automatic time warp >").
+print("***").
+
 checkFlightState().
 
 local targetMoon is 0.
