@@ -1,0 +1,29 @@
+{
+	"entries": [
+		{
+			"value": "targetLevel",
+			"$type": "kOS.Safe.Encapsulation.StringValue"
+		},
+		{
+			"value": 350000,
+			"$type": "kOS.Safe.Encapsulation.ScalarIntValue"
+		},
+		{
+			"value": "targetInclination",
+			"$type": "kOS.Safe.Encapsulation.StringValue"
+		},
+		{
+			"value": 0,
+			"$type": "kOS.Safe.Encapsulation.ScalarIntValue"
+		},
+		{
+			"value": "initialLevelAboveAtm",
+			"$type": "kOS.Safe.Encapsulation.StringValue"
+		},
+		{
+			"value": 15000,
+			"$type": "kOS.Safe.Encapsulation.ScalarIntValue"
+		}
+	],
+	"$type": "kOS.Safe.Encapsulation.Lexicon"
+}
