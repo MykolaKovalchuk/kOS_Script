@@ -44,8 +44,8 @@ function ascendToLevel {
 	parameter level, targetInclination.
 
 	doSafeStage().
-	autoThrotle().
-	autoPitch(level, targetInclination).
+	autoThrotle(1.7).
+	autoPitch(level, targetInclination, 84).
 
 	until apoapsis > level {
 		autoStage().
@@ -56,7 +56,7 @@ function ascendToLevel {
 }
 
 function autoThrotle {
-	parameter desiredSrfTwr is 1.9.
+	parameter desiredSrfTwr is 1.7.
 
 	lock throttle to 1.
 	when (ship:availablethrust / (ship:mass * getGravityAtSurface())) >= desiredSrfTwr then {
@@ -67,13 +67,20 @@ function autoThrotle {
 
 function autoPitch {
 	parameter targetLevel, targetInclination.
+	parameter initialPitch is 85.
 
 	local targetDirection is calculateDirectionWithBodyRotation(targetLevel, targetInclination).
 
 	lock targetPitch to 90.
-	local koeff is 1.03287 * body:atm:height / Kerbin:atm:height.
-	when alt:radar > 1_000 then {
-		lock targetPitch to 89.999 - koeff * (alt:radar - 1_000) ^ 0.409511.
+	when alt:radar > 1_000 or ship:airspeed > 100 then {
+		print "Initiating pitch.".
+		lock targetPitch to initialPitch.
+
+		local flatDirectionVector is heading(targetDirection, 0):vector.
+		when abs(vang(srfPrograde:vector, flatDirectionVector)) < initialPitch then {
+			print "Starting gravity pitch.".
+			lock targetPitch to max(min(abs(vang(srfPrograde:vector, flatDirectionVector) + 0.01), initialPitch), 5).
+		}
 	}
 
 	lock steering to heading(targetDirection, targetPitch).
