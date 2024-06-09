@@ -164,6 +164,29 @@ function circularizeOrbit {
 	executeManeuver(mnv, checkObt_func, autoWarp).
 }
 
+function circularizeOrbitWithoutManeuver {
+	print "Circularizing manually.".
+
+	lock steering to prograde.
+
+	local level is ship:apoapsis.
+	local v1 is getCircOrbitV(body, level).
+
+	print "ETA to apoapsis: " + eta:apoapsis.
+	print "Initial burn time: " + getEstimatedBurnTime(v1 - ship:velocity:orbit:mag).
+
+	wait until getEstimatedBurnTime(v1 - ship:velocity:orbit:mag) / 2 >= eta:apoapsis.
+
+	local burnTime is getEstimatedBurnTime(v1 - ship:velocity:orbit:mag).
+	print "Final burn time: " + burnTime.
+
+	lock throttle to 1.
+
+	local endTime is time:seconds + burnTime.
+	wait until time:seconds >= endTime or ship:periapsis >= level.
+	stopEngine("circularizing").
+}
+
 function changeCircOrbit {
 	parameter newLevel.
 

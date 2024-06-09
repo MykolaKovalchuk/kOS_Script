@@ -17,7 +17,7 @@ function launchTo {
 	parameter targetInclination is 0.
 	parameter initialLevel is body:atm:height + 15_000.
 
-	if (initialLevel <= body:atm:height) {
+	if (initialLevel <= body:atm:height or career():canmakenodes = false) {
 		set initialLevel to targetLevel.
 	}
 	ascendToLevel(initialLevel, targetInclination).
@@ -29,11 +29,16 @@ function launchTo {
 	set mapView to true.
 	wait 1.
 
-	circularizeOrbit(ship:apoapsis, eta:apoapsis).
+	if (career():canmakenodes = false) {
+		circularizeOrbitWithoutManeuver().
+	}
+	else {
+		circularizeOrbit(ship:apoapsis, eta:apoapsis).
 
-	if targetLevel > initialLevel {
-		wait 1.
-		changeCircOrbit(targetLevel).
+		if targetLevel > initialLevel {
+			wait 1.
+			changeCircOrbit(targetLevel).
+		}
 	}
 
 	wait 1.
