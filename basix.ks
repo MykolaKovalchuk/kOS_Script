@@ -177,13 +177,15 @@ function circularizeOrbitWithoutManeuver {
 
 	wait until getEstimatedBurnTime(v1 - ship:velocity:orbit:mag) / 2 >= eta:apoapsis.
 
-	local burnTime is getEstimatedBurnTime(v1 - ship:velocity:orbit:mag).
+	local deltaV is v1 - ship:velocity:orbit:mag.
+	local burnTime is getEstimatedBurnTime(deltaV).
 	print "Final burn time: " + burnTime.
 
-	lock throttle to 1.
+	local throttelCoeff is 1.5.
+	lock acc to ship:availablethrust / ship:mass.
+	lock throttle to choose 1 if acc <= 0 else min(1, throttelCoeff * deltaV / acc).
 
-	local endTime is time:seconds + burnTime.
-	wait until time:seconds >= endTime or ship:periapsis >= level.
+	wait until ship:periapsis >= level.
 	stopEngine("circularizing").
 }
 
