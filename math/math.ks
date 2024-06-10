@@ -83,6 +83,13 @@ function getCircOrbitV {
 	return sqrt(parentBody:mu / (parentBody:radius + level)).
 }
 
+function getOrbitApoapsisV {
+	parameter parentBody is body.
+	parameter level is ship:apoapsis.
+	parameter semimajoraxis is ship:orbit:semimajoraxis.
+	return sqrt(parentBody:mu * ((2 / (parentBody:radius + level)) - (1 / semimajoraxis))).
+}
+
 function calculateDeltaVToAltitude {
 	parameter newLevel, m_time.
 	parameter startLevel is -1.

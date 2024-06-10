@@ -1,6 +1,7 @@
 @LAZYGLOBAL OFF.
 
-runOncePath("math").
+runOncePath("math/math").
+runOncePath("math/vel_vec").
 
 function waitRCS {
 	RCS on.
@@ -136,78 +137,4 @@ function executeManeuver {
 	stopEngine("maneuver").
 
 	removeManeuverFromFlightPlan(mnv).
-}
-
-function circularizeOrbit {
-	parameter level, levelEta.
-	parameter autoWarp is true.
-
-	print "Circularizing.".
-
-	local m_time is time:seconds + levelEta.
-	local v0 is velocityat(ship, m_time):orbit:mag.
-	local v1 is getCircOrbitV(body, level).
-	local deltaV is v1 - v0.
-
-	local mnv is node(m_time, 0, 0, deltaV).
-	if hasNode {
-		if abs(nextNode:prograde - deltaV) > getManeuverPrecisionDeltaV() or abs(nextNode:eta - levelEta) > 1 {
-			removeManeuverFromFlightPlan(nextNode).
-		}
-		else {
-			set mnv to nextNode.
-		}
-	}
-
-	local precision is getManeuverPrecisionMetres() * 2.
-	local checkObt_func is { parameter o. return o:apoapsis > 0 and o:periapsis > 0 and (o:apoapsis - o:periapsis) < precision. }.
-	executeManeuver(mnv, checkObt_func, autoWarp).
-}
-
-function circularizeOrbitWithoutManeuver {
-	print "Circularizing manually.".
-
-	lock steering to prograde.
-
-	local level is ship:apoapsis.
-	local v1 is getCircOrbitV(body, level).
-
-	print "ETA to apoapsis: " + eta:apoapsis.
-	print "Initial burn time: " + getEstimatedBurnTime(v1 - ship:velocity:orbit:mag).
-
-	wait until getEstimatedBurnTime(v1 - ship:velocity:orbit:mag) / 2 >= eta:apoapsis.
-
-	local deltaV is v1 - ship:velocity:orbit:mag.
-	local burnTime is getEstimatedBurnTime(deltaV).
-	print "Final burn time: " + burnTime.
-
-	local throttelCoeff is 1.5.
-	lock acc to ship:availablethrust / ship:mass.
-	lock throttle to choose 1 if acc <= 0 else min(1, throttelCoeff * deltaV / acc).
-
-	wait until ship:periapsis >= level.
-	stopEngine("circularizing").
-}
-
-function changeCircOrbit {
-	parameter newLevel.
-
-	local oldLevel is ship:altitude.
-	local startEta is choose eta:periapsis if newLevel > oldLevel else eta:apoapsis.
-
-	print "Changing orbit level in: " + startEta.
-
-	print "Going to transitional orbit.".
-	local m_time is time:seconds + startEta.
-	local deltaV1 is calculateDeltaVToAltitude(newLevel, m_time).
-	local mnv is node(m_time, 0, 0, deltaV1).
-
-	local precision is getManeuverPrecisionMetres().
-	local checkObt_func is choose { parameter o. return o:apoapsis > newLevel - precision. } if newLevel > oldLevel else { parameter o. return o:periapsis < newLevel + precision. }.
-	executeManeuver(mnv, checkObt_func).
-
-	wait 1.
-	local circLevel is choose ship:apoapsis if newLevel > oldLevel else ship:periapsis.
-	local circEta is choose eta:apoapsis if newLevel > oldLevel else eta:periapsis.
-	circularizeOrbit(circLevel, circEta).
 }

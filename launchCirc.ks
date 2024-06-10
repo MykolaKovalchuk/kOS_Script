@@ -1,7 +1,8 @@
 @LAZYGLOBAL OFF.
 
-runOncePath("math").
+runOncePath("math/math").
 runOncePath("basix").
+runOncePath("orbit").
 
 function launch {
 	parameter fileName is "launchCirc.json".
