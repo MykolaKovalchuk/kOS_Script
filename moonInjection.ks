@@ -1,6 +1,6 @@
 @LAZYGLOBAL OFF.
 
-runOncePath("math").
+runOncePath("math/math").
 runOncePath("basix").
 
 function getInitialMoonInjectionManeuver {

@@ -1,9 +1,12 @@
-copyPath("0:/math", "").
-copyPath("0:/basix", "").
-copyPath("0:/moonInjection", "").
+copyPath("0:/math/math.ks", "/math/math.ks").
+copyPath("0:/math/vel_vec.ks", "/math/vel_vec.ks").
+copyPath("0:/basix.ks", "").
+copyPath("0:/orbit.ks", "").
+copyPath("0:/moonInjection.ks", "").
 
-runOncePath("0:/math").
+runOncePath("0:/math/math").
 runOncePath("0:/basix").
+runOncePath("0:/orbit").
 runOncePath("0:/moonInjection").
 
 local moonOrbitLevel is 15_000.
@@ -21,6 +24,8 @@ if ship:orbit:hasNextPatch {
 	circularizeOrbit(ship:periapsis, eta:periapsis).
 }
 
-deletePath("math").
-deletePath("basix").
-deletePath("moonInjection").
+deletePath("/math/math.ks").
+deletePath("/math/vel_vec.ks").
+deletePath("basix.ks").
+deletePath("orbit.ks").
+deletePath("moonInjection.ks").

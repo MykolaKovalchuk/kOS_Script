@@ -42,15 +42,17 @@ if (flightState:target <> "") {
 
 if flightState:state = "" {
 	print "Loading scripts from archive.".
-	copyPath("0:/math", "").
-	copyPath("0:/basix", "").
-	copyPath("0:/launchCirc", "").
-	copyPath("0:/moonInjection", "").
+	copyPath("0:/math/math.ks", "/math/math.ks").
+	copyPath("0:/math/vel_vec.ks", "/math/vel_vec.ks").
+	copyPath("0:/basix.ks", "").
+	copyPath("0:/orbit.ks", "").
+	copyPath("0:/launchCirc.ks", "").
+	copyPath("0:/moonInjection.ks", "").
 
 	saveFlightState("launch").
 }
 
-runOncePath("math").
+runOncePath("math/math").
 runOncePath("basix").
 runOncePath("launchCirc").
 runOncePath("moonInjection").
