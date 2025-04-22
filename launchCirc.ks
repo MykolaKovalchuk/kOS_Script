@@ -51,7 +51,7 @@ function ascendToLevel {
 
 	doSafeStage().
 	autoThrotle(1.7).
-	autoPitch(level, targetInclination, 84).
+	autoPitch(level, targetInclination, 85).
 
 	until apoapsis > level {
 		autoStage().
